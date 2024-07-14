@@ -47,8 +47,9 @@ To run the app locally, follow these steps:
 
 1. **Clone Repository:**
    
-**git clone https://github.com/suganram2942/movieApp**
-**cd movie-information-app**
+**git clone https://github.com/suganram2942/movieApp**   
+
+**cd movieApp**
 
 
 
