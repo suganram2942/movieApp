@@ -11,8 +11,7 @@ Welcome to the Movie Information App! This mobile application allows you to expl
 - [Building and Running]
 - [Usage]
 - [Future Improvements]
-- [Credits]
-- [License]
+
 ## Introduction
 
 This React Native app fetches movie data from TMDb API and provides a seamless user experience for browsing movies based on genres and release years.
