@@ -1,16 +1,18 @@
+
 # Movie Information App
 
 Welcome to the Movie Information App! This mobile application allows you to explore and discover movies from The Movie Database (TMDb) on your device.
 
 ## Table of Contents
 
-- [Introduction]
-- [Features]
-- [Requirements]
-- [Installation]
-- [Building and Running]
-- [Usage]
-- [Future Improvements]
+- [Introduction](#introduction)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Building and Running](#building-and-running)
+- [Generating the APK](#generating-the-apk)
+- [Usage](#usage)
+- [Future Improvements](#future-improvements)
 
 ## Introduction
 
@@ -44,48 +46,64 @@ This React Native app fetches movie data from TMDb API and provides a seamless u
 
 To run the app locally, follow these steps:
 
-1. **Clone Repository:**
-   
-**git clone https://github.com/suganram2942/movieApp**   
+### Clone Repository:
 
-**cd movieApp**
+git clone https://github.com/suganram2942/movieApp
+cd movieApp
 
+### Install Dependencies:
 
+npm install
 
-
-# Install Dependencies:
-
-**npm install**
-
-# Configure Environment:
+### Configure Environment:
 
 Obtain an API key from TMDb (https://www.themoviedb.org/documentation/api) and add it to your environment file (e.g., .env).
 
+## Building and Running
 
-# Building and Running
-Running on iOS Simulator
-Install Pods (if necessary):
+### Running on iOS Simulator
 
-**cd ios && pod install && cd ..**
+#### Install Pods (if necessary):
 
-# Run the iOS App:
-**npx react-native run-ios**
+cd ios && pod install && cd ..
 
-# Running on Android Emulator/Device
-Start Android Emulator (if not started):
+#### Run the iOS App:
 
-## Open Android Studio and launch the emulator.
-Run the Android App:
+npx react-native run-ios
 
-**npx react-native run-android**
+### Running on Android Emulator/Device
 
-# Usage
+#### Start Android Emulator (if not started):
+
+Open Android Studio and launch the emulator.
+
+#### Run the Android App:
+
+npx react-native run-android
+
+## Generating the APK
+
+To generate the debug APK and run it on a physical device, follow these steps:
+
+1. Go to the project directory:
+
+**cd android**
+
+2. Generate the debug APK:
+
+    **./gradlew assembleDebug**
+
+3. The APK will be generated in the \`android/app/build/outputs/apk/debug/\` directory. Transfer the APK to your physical device and install it.
+
+## Usage
+
 Upon launching the app, you will see a list of popular movies.
 Use the genre filter to narrow down the list based on your preferences.
 Scroll horizontally to load movies from different release years.
 Tap on a movie to view its detailed information.
 
-# Future Improvements
-Implement offline mode support for saved movies.
-Enhance search capabilities with more filters and sorting options.
-Incorporate user authentication for personalized recommendations.
+## Future Improvements
+
+- Implement offline mode support for saved movies.
+- Enhance search capabilities with more filters and sorting options.
+- Incorporate user authentication for personalized recommendations.
