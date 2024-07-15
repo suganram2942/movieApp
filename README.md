@@ -27,6 +27,9 @@ This React Native app fetches movie data from TMDb API and provides a seamless u
 
 ## Requirements
 
+# - JDK 17 (Must)
+# - gradle version 8.6
+
 ### Covered Requirements:
 
 - Displaying a list of movies from TMDb API.
