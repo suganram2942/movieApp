@@ -87,13 +87,17 @@ To generate the debug APK and run it on a physical device, follow these steps:
 
 1. Go to the project directory:
 
-**cd android**
+    **cd android**
 
 2. Generate the debug APK:
 
     **./gradlew assembleDebug**
 
-3. The APK will be generated in the \`android/app/build/outputs/apk/debug/\` directory. Transfer the APK to your physical device and install it.
+3. The APK will be generated in the directory
+
+    **android/app/build/outputs/apk/debug/** 
+
+   Transfer the APK to your physical device and install it.
 
 ## Usage
 
