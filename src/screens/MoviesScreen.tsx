@@ -21,11 +21,20 @@ interface Movie {
   vote_average: number;
   release_date: string;
   overview: string;
+  genres: Genre[];
+  cast: Cast[];
+  director: string;
 }
 
 interface Genre {
   id: number;
   name: string;
+}
+
+interface Cast {
+  id: number;
+  name: string;
+  character: string;
 }
 
 const MoviesScreen: React.FC = () => {
@@ -36,6 +45,44 @@ const MoviesScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingGenres, setLoadingGenres] = useState<boolean>(false);
+
+  const fetchMovieDetails = async (movieId: number) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&append_to_response=credits`,
+      );
+      const movieDetails = response.data;
+      const genres =
+        movieDetails.genres?.map((genre: any) => ({
+          id: genre.id,
+          name: genre.name,
+        })) || [];
+      const cast =
+        movieDetails.credits?.cast?.slice(0, 5).map((member: any) => ({
+          id: member.id,
+          name: member.name,
+          character: member.character,
+        })) || [];
+      const director =
+        movieDetails.credits?.crew?.find(
+          (member: any) => member.job === 'Director',
+        )?.name || '';
+
+      return {
+        genres,
+        cast,
+        director,
+      };
+    } catch (error) {
+      console.error('Error fetching movie details:', error);
+      return {
+        genres: [],
+        cast: [],
+        director: '',
+      };
+    }
+  };
 
   const fetchMovies = async (
     page: number,
@@ -50,10 +97,22 @@ const MoviesScreen: React.FC = () => {
         ? `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchQuery}&page=${page}`
         : `${BASE_URL}/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&primary_release_year=${year}${genreParam}&page=${page}&vote_count.gte=100`;
       const response = await axios.get(endpoint);
+      const moviesWithDetails = await Promise.all(
+        response.data.results?.map(async (movie: any) => {
+          const details = await fetchMovieDetails(movie.id);
+          return {
+            id: movie.id,
+            title: movie.title,
+            poster_path: movie.poster_path,
+            vote_average: movie.vote_average,
+            release_date: movie.release_date,
+            overview: movie.overview,
+            ...details,
+          };
+        }) || [],
+      );
       setMovies(prevMovies =>
-        page === 1
-          ? response.data.results
-          : [...prevMovies, ...response.data.results],
+        page === 1 ? moviesWithDetails : [...prevMovies, ...moviesWithDetails],
       );
     } catch (error) {
       if (error.response) {
@@ -71,10 +130,11 @@ const MoviesScreen: React.FC = () => {
 
   const fetchGenres = async () => {
     try {
+      setLoadingGenres(true);
       const response = await axios.get(
         `${BASE_URL}/genre/movie/list?api_key=${API_KEY}`,
       );
-      setGenres(response.data.genres);
+      setGenres(response.data.genres || []);
     } catch (error) {
       if (error.response) {
         console.error('Response error:', error.response.data);
@@ -84,6 +144,8 @@ const MoviesScreen: React.FC = () => {
         console.error('General error:', error.message);
       }
       console.error('Error config:', error.config);
+    } finally {
+      setLoadingGenres(false);
     }
   };
 
@@ -104,18 +166,34 @@ const MoviesScreen: React.FC = () => {
     }
   };
 
-  const renderMovie = ({item}: {item: Movie}) => (
-    <View style={styles.movieCard}>
-      <Image
-        source={{uri: `https://image.tmdb.org/t/p/w500${item.poster_path}`}}
-        style={styles.image}
-      />
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.details}>Rating: {item.vote_average}</Text>
-      <Text style={styles.details}>Release Date: {item.release_date}</Text>
-      <Text style={styles.description}>{item.overview}</Text>
-    </View>
-  );
+  const renderMovie = ({item}: {item: Movie}) => {
+    const formattedDate = item.release_date
+      ? new Date(item?.release_date).toLocaleDateString('en-GB')
+      : 'N/A';
+    const roundedRating = item?.vote_average
+      ? (Math.round(item?.vote_average * 10) / 10).toFixed(1)
+      : 'N/A';
+
+    return (
+      <View style={styles.movieCard}>
+        <Image
+          source={{uri: `https://image.tmdb.org/t/p/w500${item?.poster_path}`}}
+          style={styles.image}
+        />
+        <Text style={styles.title}>{item?.title}</Text>
+        <Text style={styles.details}>Rating: {roundedRating}</Text>
+        <Text style={styles.details}>Release Date: {formattedDate}</Text>
+        <Text style={styles.details}>
+          Genres: {item?.genres?.map(genre => genre?.name).join(', ') || 'N/A'}
+        </Text>
+        <Text style={styles.details}>
+          Cast: {item?.cast?.map(member => member?.name).join(', ') || 'N/A'}
+        </Text>
+        <Text style={styles.details}>Director: {item.director || 'N/A'}</Text>
+        <Text style={styles.description}>{item.overview}</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -125,6 +203,7 @@ const MoviesScreen: React.FC = () => {
         genres={genres}
         selectedGenre={selectedGenre}
         setSelectedGenre={setSelectedGenre}
+        loadingGenres={loadingGenres}
       />
       <FlatList
         data={movies}

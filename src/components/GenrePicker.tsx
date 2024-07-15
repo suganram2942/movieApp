@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, FlatList, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 
 interface Genre {
   id: number;
@@ -10,12 +17,14 @@ interface GenrePickerProps {
   genres: Genre[];
   selectedGenre: number | null;
   setSelectedGenre: (genreId: number) => void;
+  loadingGenres: boolean;
 }
 
 const GenrePicker: React.FC<GenrePickerProps> = ({
   genres,
   selectedGenre,
   setSelectedGenre,
+  loadingGenres,
 }) => {
   const renderItem = ({item}: {item: Genre}) => (
     <TouchableOpacity
@@ -24,7 +33,7 @@ const GenrePicker: React.FC<GenrePickerProps> = ({
       <Text
         style={[
           styles.genreText,
-          selectedGenre === item.id && styles.selectedGenreText,
+          selectedGenre === item?.id && styles.selectedGenreText,
         ]}>
         {item.name}
       </Text>
@@ -33,14 +42,18 @@ const GenrePicker: React.FC<GenrePickerProps> = ({
 
   return (
     <View style={styles.genreList}>
-      <FlatList
-        data={genres}
-        horizontal
-        keyExtractor={item => item.id.toString()}
-        renderItem={renderItem}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.genreListContent}
-      />
+      {loadingGenres ? (
+        <ActivityIndicator size="large" color="#ff3d3d" />
+      ) : (
+        <FlatList
+          data={genres}
+          horizontal
+          keyExtractor={item => item.id.toString()}
+          renderItem={renderItem}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.genreListContent}
+        />
+      )}
     </View>
   );
 };
