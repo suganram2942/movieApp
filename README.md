@@ -49,15 +49,18 @@ To run the app locally, follow these steps:
 ### Clone Repository:
 
 git clone https://github.com/suganram2942/movieApp
+
 cd movieApp
 
 ### Install Dependencies:
 
 npm install
 
+
 ### Configure Environment:
 
-Obtain an API key from TMDb (https://www.themoviedb.org/documentation/api) and add it to your environment file (e.g., .env).
+I have already added the API_KEY. If you want to new get it from TMDb (https://www.themoviedb.org/documentation/api) site and add it in movieScreen component.
+For Example: const API_KEY = **'Paste your code'**;
 
 ## Building and Running
 
